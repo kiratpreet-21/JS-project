@@ -118,7 +118,8 @@ class StudyWheel {
 
   toggleSound() {
     this.soundEnabled = !this.soundEnabled;
-    this.soundToggle.textContent = this.soundEnabled ? '🔊' : '🔇';
+    this.soundToggle.innerHTML = this.soundEnabled ? '<i data-lucide="volume-2" class="icon-inline"></i>' : '<i data-lucide="volume-x" class="icon-inline"></i>';
+    if (typeof refreshIcons === 'function') refreshIcons();
   }
 
   draw() {

@@ -93,17 +93,17 @@ function livePreview() {
   const hoursPerDay = days > 0 ? (estWork / days).toFixed(1) : estWork;
   
   let metaHTML = `
-    <span class="tc-chip">⚡ Diff: ${diff}/5</span>
-    <span class="tc-chip">📅 ${days > 0 ? days + 'd left' : days === 0 ? 'Today!' : 'Overdue!'}</span>
-    <span class="tc-chip">🗓 ${formatDate(date)}</span>`;
+    <span class="tc-chip"><i data-lucide="zap" class="icon-inline"></i> Diff: ${diff}/5</span>
+    <span class="tc-chip"><i data-lucide="calendar" class="icon-inline"></i> ${days > 0 ? days + 'd left' : days === 0 ? 'Today!' : 'Overdue!'}</span>
+    <span class="tc-chip"><i data-lucide="calendar" class="icon-inline"></i> ${formatDate(date)}</span>`;
 
   if (work > 0) {
-    metaHTML += `<span class="tc-chip">📘 ${work} hrs</span>`;
+    metaHTML += `<span class="tc-chip"><i data-lucide="book-open" class="icon-inline"></i> ${work} hrs</span>`;
   } else {
-    metaHTML += `<span class="tc-chip">🤖 Est. ${estWork} hrs</span>`;
+    metaHTML += `<span class="tc-chip"><i data-lucide="bot" class="icon-inline"></i> Est. ${estWork} hrs</span>`;
   }
   
-  metaHTML += `<span class="tc-chip" style="background:var(--c-primary-alpha); color:var(--c-primary); border: 1px solid var(--c-primary); font-weight: bold;">⏱️ ~${hoursPerDay}h/d</span>`;
+  metaHTML += `<span class="tc-chip" style="background:var(--c-primary-alpha); color:var(--c-primary); border: 1px solid var(--c-primary); font-weight: bold;"><i data-lucide="clock" class="icon-inline"></i> ~${hoursPerDay}h/d</span>`;
 
   const priority = calculatePriority(diff, date, work);
   const level = getPriorityLevel(priority);
@@ -119,6 +119,7 @@ function livePreview() {
   if (prevBadge) {
     prevBadge.innerHTML = `<span class="priority-badge pb-${level}" style="display:inline-block">${level.toUpperCase()}</span>`;
   }
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ─── Form submit ─── */

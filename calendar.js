@@ -72,12 +72,23 @@ function renderCalendar() {
 
       if (daysDiff < 0) {
         examLevel = 'exam-past';
-      } else if (daysDiff <= 3) {
-        examLevel = 'exam-urgent';
-      } else if (daysDiff <= 7) {
-        examLevel = 'exam-soon';
       } else {
-        examLevel = 'exam-far';
+        // Use the highest priority level among exams on this day
+        let highestLevel = 'low';
+        examsOnDay.forEach(t => {
+          const priority = calculatePriority(t.difficulty, t.examDate, t.workAmount);
+          const level = getPriorityLevel(priority);
+          if (level === 'high') highestLevel = 'high';
+          else if (level === 'medium' && highestLevel !== 'high') highestLevel = 'medium';
+        });
+
+        if (highestLevel === 'high') {
+          examLevel = 'exam-urgent';
+        } else if (highestLevel === 'medium') {
+          examLevel = 'exam-soon';
+        } else {
+          examLevel = 'exam-far';
+        }
       }
     }
 
@@ -122,13 +133,14 @@ function selectCalendarDay(dateKey) {
     html += examsOnDay.map(t => `
       <div class="cal-info-item">
         <span class="cal-info-dot" style="background:${t.color}"></span>
-        <span class="cal-info-text"><strong>${escHtml(t.subject)}</strong> Exam 🎓</span>
+        <span class="cal-info-text"><strong>${escHtml(t.subject)}</strong> Exam <i data-lucide="graduation-cap" class="icon-inline"></i></span>
       </div>`).join('');
   } else {
     html += `<div class="cal-info-empty">No exams scheduled.</div>`;
   }
 
   infoEl.innerHTML = html;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 function changeMonth(delta) {

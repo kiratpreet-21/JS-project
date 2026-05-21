@@ -130,11 +130,11 @@ function generateBreakRecommendations(daysLeft, difficulty) {
 /** Get optimal study time label based on current hour */
 function getOptimalStudyHours(date) {
   const h = date.getHours();
-  if (h >= 6 && h < 10) return '🌅 Morning (Peak Focus)';
-  if (h >= 10 && h < 12) return '☀️ Late Morning (Good Focus)';
-  if (h >= 14 && h < 17) return '☀️ Afternoon (Moderate)';
-  if (h >= 19 && h < 21) return '🌙 Evening (Good for Revision)';
-  return '🌙 Night (Use for Light Review)';
+  if (h >= 6 && h < 10) return 'Morning (Peak Focus)';
+  if (h >= 10 && h < 12) return 'Late Morning (Good Focus)';
+  if (h >= 14 && h < 17) return 'Afternoon (Moderate)';
+  if (h >= 19 && h < 21) return 'Evening (Good for Revision)';
+  return 'Night (Use for Light Review)';
 }
 
 /* ═════════════════════════════════════════════
@@ -152,7 +152,7 @@ function generateSmartSuggestions() {
   if (subjectAnalysis.behind.length > 0) {
     const behind = subjectAnalysis.behind[0];
     suggestions.push({
-      type: 'warning', icon: '⚠️', title: 'Behind Schedule',
+      type: 'warning', icon: 'alert-triangle', title: 'Behind Schedule',
       message: `You're behind in ${behind.subject}. Consider increasing daily study time.`,
       action: { label: 'Boost Study Plan', fn: () => openAIPlanner(behind.id) },
       priority: 'high'
@@ -162,7 +162,7 @@ function generateSmartSuggestions() {
   if (subjectAnalysis.imbalance > 0.4 && subjectAnalysis.needsMore[0]) {
     const rec = subjectAnalysis.needsMore[0];
     suggestions.push({
-      type: 'info', icon: '⚖️', title: 'Better Balance',
+      type: 'info', icon: 'scale', title: 'Better Balance',
       message: `Study ${rec.subject} today for more balanced preparation.`,
       priority: 'medium'
     });
@@ -171,7 +171,7 @@ function generateSmartSuggestions() {
   const optimalTime = detectOptimalStudyTime(progress);
   if (optimalTime) {
     suggestions.push({
-      type: 'success', icon: '🌟', title: 'Your Best Study Time',
+      type: 'success', icon: 'star', title: 'Your Best Study Time',
       message: `You perform best at ${optimalTime}. Schedule important topics then.`,
       priority: 'low'
     });
@@ -179,7 +179,7 @@ function generateSmartSuggestions() {
 
   if (user.streak >= 3 && user.streak < 7) {
     suggestions.push({
-      type: 'success', icon: '🔥', title: 'Keep the Streak Going!',
+      type: 'success', icon: 'flame', title: 'Keep the Streak Going!',
       message: `You have a ${user.streak}-day streak! One more day to reach a week.`,
       priority: 'medium'
     });
@@ -187,7 +187,7 @@ function generateSmartSuggestions() {
 
   if (stats.total > 0 && stats.completionPercent < 50) {
     suggestions.push({
-      type: 'warning', icon: '📋', title: 'Task Completion Low',
+      type: 'warning', icon: 'clipboard', title: 'Task Completion Low',
       message: `Complete ${Math.ceil(stats.total * 0.5) - stats.completed} more tasks to reach 50%.`,
       priority: 'high'
     });
@@ -199,7 +199,7 @@ function generateSmartSuggestions() {
 
   if (urgentExams.length > 0) {
     suggestions.push({
-      type: 'warning', icon: '⏰',
+      type: 'warning', icon: 'clock',
       title: `Exam in ${getDaysLeft(urgentExams[0].examDate)} Days`,
       message: `Focus on ${urgentExams[0].subject} — exam approaching!`,
       priority: 'high'
@@ -208,7 +208,7 @@ function generateSmartSuggestions() {
 
   if (suggestions.length === 0) {
     suggestions.push({
-      type: 'success', icon: '✨', title: 'Looking Good!',
+      type: 'success', icon: 'sparkles', title: 'Looking Good!',
       message: 'You\'re on track. Keep up the great study habits!',
       priority: 'low'
     });
@@ -384,7 +384,7 @@ function handleExplainIntent(msg) {
   const topic = topicMatch ? topicMatch[1].trim() : 'this topic';
 
   return {
-    text: `<p>📖 <strong>Explaining: ${escHtml(topic)}</strong></p>
+    text: `<p><i data-lucide="book-open" class="icon-inline"></i> <strong>Explaining: ${escHtml(topic)}</strong></p>
 <p>Here's a structured approach to understanding <em>${escHtml(topic)}</em>:</p>
 <ul>
   <li><strong>Core Concept:</strong> Break it down to its simplest definition first</li>
@@ -392,7 +392,7 @@ function handleExplainIntent(msg) {
   <li><strong>Key components:</strong> Identify the main parts or steps</li>
   <li><strong>Common mistakes:</strong> Know what to avoid</li>
 </ul>
-<p>💡 <em>Tip: Try the Feynman Technique — explain it in your own words as if teaching someone else. If you get stuck, that's exactly where to focus your study!</em></p>`,
+<p><i data-lucide="lightbulb" class="icon-inline"></i> <em>Tip: Try the Feynman Technique — explain it in your own words as if teaching someone else. If you get stuck, that's exactly where to focus your study!</em></p>`,
     type: 'explanation',
     suggestions: ['Explain spaced repetition', 'Explain active recall', 'Explain Pomodoro technique', 'Give me a quiz']
   };
@@ -400,9 +400,9 @@ function handleExplainIntent(msg) {
 
 function buildExplanationHTML(info) {
   const tipsHtml = info.tips.map(t => `<li>${escHtml(t)}</li>`).join('');
-  return `<p>📖 <strong>${escHtml(info.title)}</strong></p>
+  return `<p><i data-lucide="book-open" class="icon-inline"></i> <strong>${escHtml(info.title)}</strong></p>
 <p>${escHtml(info.body)}</p>
-<p><strong>✅ How to apply it:</strong></p>
+<p><strong><i data-lucide="check-circle" class="icon-inline"></i> How to apply it:</strong></p>
 <ul>${tipsHtml}</ul>`;
 }
 
@@ -414,9 +414,9 @@ function handleSummarizeIntent() {
 
   if (tasks.length === 0) {
     return {
-      text: `<p>📝 <strong>Your Study Summary</strong></p>
+      text: `<p><i data-lucide="file-text" class="icon-inline"></i> <strong>Your Study Summary</strong></p>
 <p>You don't have any active subjects yet.</p>
-<p>👉 <a href="add.html" style="color:var(--accent-c)">Add your first subject</a> to get started with a personalized study plan!</p>`,
+<p><i data-lucide="arrow-right" class="icon-inline"></i> <a href="add.html" style="color:var(--accent-c)">Add your first subject</a> to get started with a personalized study plan!</p>`,
       type: 'summary',
       suggestions: ['Create a study plan', 'Get study tips', 'Start Pomodoro']
     };
@@ -426,15 +426,15 @@ function handleSummarizeIntent() {
   const topTask = tasks.sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
 
   return {
-    text: `<p>📝 <strong>Your Study Summary</strong></p>
+    text: `<p><i data-lucide="file-text" class="icon-inline"></i> <strong>Your Study Summary</strong></p>
 <ul>
-  <li>📚 <strong>${tasks.length}</strong> active subject${tasks.length !== 1 ? 's' : ''} to study</li>
-  <li>✅ <strong>${stats.completed}/${stats.total}</strong> tasks completed (${stats.completionPercent}%)</li>
-  <li>🔥 <strong>${stats.streak}</strong> day study streak</li>
-  <li>⏱️ Total study time: <strong>${Math.round(stats.totalMinutes / 60)} hours</strong></li>
-  ${urgentTasks.length > 0 ? `<li>⚠️ <strong>${urgentTasks.length}</strong> exam${urgentTasks.length !== 1 ? 's' : ''} within 7 days!</li>` : ''}
+  <li><i data-lucide="book-open" class="icon-inline"></i> <strong>${tasks.length}</strong> active subject${tasks.length !== 1 ? 's' : ''} to study</li>
+  <li><i data-lucide="check-circle" class="icon-inline"></i> <strong>${stats.completed}/${stats.total}</strong> tasks completed (${stats.completionPercent}%)</li>
+  <li><i data-lucide="flame" class="icon-inline"></i> <strong>${stats.streak}</strong> day study streak</li>
+  <li><i data-lucide="clock" class="icon-inline"></i> Total study time: <strong>${Math.round(stats.totalMinutes / 60)} hours</strong></li>
+  ${urgentTasks.length > 0 ? `<li><i data-lucide="alert-triangle" class="icon-inline"></i> <strong>${urgentTasks.length}</strong> exam${urgentTasks.length !== 1 ? 's' : ''} within 7 days!</li>` : ''}
 </ul>
-<p>🎯 <strong>Top priority right now:</strong> ${escHtml(topTask.subject)} (${getDaysLeft(topTask.examDate)}d left)</p>`,
+<p><i data-lucide="target" class="icon-inline"></i> <strong>Top priority right now:</strong> ${escHtml(topTask.subject)} (${getDaysLeft(topTask.examDate)}d left)</p>`,
     type: 'summary',
     suggestions: ['Create a study plan', 'View analytics', 'Give me a quiz', 'Start Pomodoro']
   };
@@ -460,10 +460,10 @@ function handleQuizIntent(msg) {
   }).join('');
 
   return {
-    text: `<p>🎯 <strong>Quick Quiz!</strong></p>
+    text: `<p><i data-lucide="help-circle" class="icon-inline"></i> <strong>Quick Quiz!</strong></p>
 <p class="quiz-question">${escHtml(quiz.q)}</p>
 <div class="quiz-options">${optionsHtml}</div>
-<p class="quiz-hint">👆 Tap an answer above or type it below</p>`,
+<p class="quiz-hint">Tap an answer above or type it below</p>`,
     type: 'quiz',
     quiz: { ...quiz, shuffledOptions: shuffled },
     suggestions: shuffled,
@@ -478,7 +478,7 @@ function checkQuizAnswer(selectedAnswer, correctAnswer) {
     if (typeof awardXP === 'function') awardXP(50);
     return {
       text: `<div class="quiz-result correct">
-  <p>✅ <strong>Correct!</strong> +50 XP 🎉</p>
+  <p><i data-lucide="check-circle" class="icon-inline"></i> <strong>Correct!</strong> +50 XP <i data-lucide="sparkles" class="icon-inline"></i></p>
   <p>The answer is: <strong>${escHtml(correctAnswer)}</strong></p>
 </div>`,
       type: 'quiz-result',
@@ -487,9 +487,9 @@ function checkQuizAnswer(selectedAnswer, correctAnswer) {
   } else {
     return {
       text: `<div class="quiz-result wrong">
-  <p>❌ <strong>Not quite!</strong> You answered: <em>${escHtml(selectedAnswer)}</em></p>
-  <p>✅ Correct answer: <strong>${escHtml(correctAnswer)}</strong></p>
-  <p>💡 Review this topic and try again — mistakes are how we learn!</p>
+  <p><i data-lucide="x-circle" class="icon-inline"></i> <strong>Not quite!</strong> You answered: <em>${escHtml(selectedAnswer)}</em></p>
+  <p><i data-lucide="check-circle" class="icon-inline"></i> Correct answer: <strong>${escHtml(correctAnswer)}</strong></p>
+  <p><i data-lucide="lightbulb" class="icon-inline"></i> Review this topic and try again — mistakes are how we learn!</p>
 </div>`,
       type: 'quiz-result',
       suggestions: ['Try again', 'Another quiz', 'Explain this topic', 'Create study plan']
@@ -505,12 +505,12 @@ function handlePomodoroIntent() {
     : '';
 
   return {
-    text: `<p>⏰ <strong>Pomodoro Session</strong></p>
+    text: `<p><i data-lucide="clock" class="icon-inline"></i> <strong>Pomodoro Session</strong></p>
 <p>The Pomodoro Technique keeps you focused and prevents burnout:</p>
 <ul>
-  <li>⏱️ <strong>Study:</strong> 50 minutes of deep focus</li>
-  <li>☕ <strong>Break:</strong> 10 minutes to recharge</li>
-  <li>🔄 <strong>Repeat:</strong> 4 sessions, then a 30-min break</li>
+  <li><i data-lucide="clock" class="icon-inline"></i> <strong>Study:</strong> 50 minutes of deep focus</li>
+  <li><i data-lucide="coffee" class="icon-inline"></i> <strong>Break:</strong> 10 minutes to recharge</li>
+  <li><i data-lucide="repeat" class="icon-inline"></i> <strong>Repeat:</strong> 4 sessions, then a 30-min break</li>
 </ul>
 <p>Ready to start? Use the <strong>Quick Timer</strong> widget on your dashboard, or click below!</p>`,
     type: 'pomodoro',
@@ -529,19 +529,19 @@ function handleProgressIntent() {
   const avgDailyMins = Math.round(totalWeeklyMins / 7);
 
   let performanceMsg = '';
-  if (avgDailyMins >= 120) performanceMsg = '🌟 Excellent! You\'re studying 2+ hours daily.';
-  else if (avgDailyMins >= 60) performanceMsg = '👍 Good progress! Aim for 2 hours daily for best results.';
-  else if (avgDailyMins > 0) performanceMsg = '📈 You\'re getting started. Try to build up to 1–2 hours daily.';
-  else performanceMsg = '💪 No study sessions logged this week. Let\'s change that today!';
+  if (avgDailyMins >= 120) performanceMsg = '<i data-lucide="star" class="icon-inline"></i> Excellent! You\'re studying 2+ hours daily.';
+  else if (avgDailyMins >= 60) performanceMsg = '<i data-lucide="thumbs-up" class="icon-inline"></i> Good progress! Aim for 2 hours daily for best results.';
+  else if (avgDailyMins > 0) performanceMsg = '<i data-lucide="trending-up" class="icon-inline"></i> You\'re getting started. Try to build up to 1–2 hours daily.';
+  else performanceMsg = '<i data-lucide="activity" class="icon-inline"></i> No study sessions logged this week. Let\'s change that today!';
 
   return {
-    text: `<p>📊 <strong>Your Progress Report</strong></p>
+    text: `<p><i data-lucide="bar-chart-2" class="icon-inline"></i> <strong>Your Progress Report</strong></p>
 <ul>
-  <li>✅ Completion rate: <strong>${stats.completionPercent}%</strong></li>
-  <li>🔥 Current streak: <strong>${stats.streak} days</strong></li>
-  <li>⭐ Level: <strong>${user.level || 1}</strong> (${user.xp || 0} XP)</li>
-  <li>⏱️ This week: <strong>${Math.round(totalWeeklyMins / 60 * 10) / 10} hours</strong></li>
-  <li>📅 Daily average: <strong>${avgDailyMins} min/day</strong></li>
+  <li><i data-lucide="check-circle" class="icon-inline"></i> Completion rate: <strong>${stats.completionPercent}%</strong></li>
+  <li><i data-lucide="flame" class="icon-inline"></i> Current streak: <strong>${stats.streak} days</strong></li>
+  <li><i data-lucide="star" class="icon-inline"></i> Level: <strong>${user.level || 1}</strong> (${user.xp || 0} XP)</li>
+  <li><i data-lucide="clock" class="icon-inline"></i> This week: <strong>${Math.round(totalWeeklyMins / 60 * 10) / 10} hours</strong></li>
+  <li><i data-lucide="calendar" class="icon-inline"></i> Daily average: <strong>${avgDailyMins} min/day</strong></li>
 </ul>
 <p>${performanceMsg}</p>`,
     type: 'progress',
@@ -554,21 +554,21 @@ function handlePlanIntent() {
   const tasks = getTasks().filter(t => !t.completed);
   if (tasks.length === 0) {
     return {
-      text: `<p>📅 <strong>Create a Study Plan</strong></p>
+      text: `<p><i data-lucide="calendar" class="icon-inline"></i> <strong>Create a Study Plan</strong></p>
 <p>To generate a personalized plan, you first need to add some subjects!</p>
-<p>👉 <a href="add.html" style="color:var(--accent-c)">Add your subjects</a> with exam dates and difficulty, then come back to create your plan.</p>`,
+<p><i data-lucide="arrow-right" class="icon-inline"></i> <a href="add.html" style="color:var(--accent-c)">Add your subjects</a> with exam dates and difficulty, then come back to create your plan.</p>`,
       type: 'plan',
       suggestions: ['Add a subject', 'Get study tips', 'Start Pomodoro']
     };
   }
   return {
-    text: `<p>📅 <strong>AI Study Plan Generator</strong></p>
+    text: `<p><i data-lucide="calendar" class="icon-inline"></i> <strong>AI Study Plan Generator</strong></p>
 <p>I'll create a personalized daily schedule based on:</p>
 <ul>
-  <li>📅 Your exam dates</li>
-  <li>📚 Syllabus size</li>
-  <li>⚡ Difficulty level</li>
-  <li>🧠 Optimal study patterns</li>
+  <li><i data-lucide="calendar" class="icon-inline"></i> Your exam dates</li>
+  <li><i data-lucide="book-open" class="icon-inline"></i> Syllabus size</li>
+  <li><i data-lucide="zap" class="icon-inline"></i> Difficulty level</li>
+  <li><i data-lucide="brain" class="icon-inline"></i> Optimal study patterns</li>
 </ul>
 <p>Click <strong>"Generate Plan"</strong> to open the planner!</p>`,
     type: 'plan',
@@ -585,9 +585,9 @@ function handleGreetingIntent() {
   const name = user.name ? `, ${user.name.split(' ')[0]}` : '';
 
   const messages = [
-    `<p>${greeting}${name}! 👋 Ready to crush your goals today?</p><p>I'm here to help you study smarter. What would you like to do?</p>`,
-    `<p>Hey${name}! 🎓 I'm Planora AI — your personal study coach.</p><p>Let's make today productive. What can I help you with?</p>`,
-    `<p>${greeting}${name}! 💪 Let's make some progress today.</p><p>I can create study plans, quiz you, explain topics, or track your progress.</p>`
+    `<p>${greeting}${name}! <i data-lucide="smile" class="icon-inline"></i> Ready to crush your goals today?</p><p>I'm here to help you study smarter. What would you like to do?</p>`,
+    `<p>Hey${name}! <i data-lucide="graduation-cap" class="icon-inline"></i> I'm Planora AI — your personal study coach.</p><p>Let's make today productive. What can I help you with?</p>`,
+    `<p>${greeting}${name}! <i data-lucide="trending-up" class="icon-inline"></i> Let's make some progress today.</p><p>I can create study plans, quiz you, explain topics, or track your progress.</p>`
   ];
 
   return {
@@ -600,13 +600,13 @@ function handleGreetingIntent() {
 /** Notes summarization */
 function handleNotesIntent() {
   return {
-    text: `<p>📝 <strong>Note Summarization</strong></p>
+    text: `<p><i data-lucide="file-text" class="icon-inline"></i> <strong>Note Summarization</strong></p>
 <p>To summarize your notes, paste them in the chat and I'll help you:</p>
 <ul>
-  <li>🔑 Extract key concepts</li>
-  <li>📌 Identify important definitions</li>
-  <li>🗂️ Organize information by topic</li>
-  <li>❓ Generate review questions</li>
+  <li><i data-lucide="key" class="icon-inline"></i> Extract key concepts</li>
+  <li><i data-lucide="pin" class="icon-inline"></i> Identify important definitions</li>
+  <li><i data-lucide="folder" class="icon-inline"></i> Organize information by topic</li>
+  <li><i data-lucide="help-circle" class="icon-inline"></i> Generate review questions</li>
 </ul>
 <p>Or I can summarize your current study situation based on your subjects!</p>`,
     type: 'notes',
@@ -626,10 +626,10 @@ function handleMotivationIntent() {
   const m = motivations[Math.floor(Math.random() * motivations.length)];
 
   return {
-    text: `<p>✨ <strong>Daily Motivation</strong></p>
+    text: `<p><i data-lucide="sparkles" class="icon-inline"></i> <strong>Daily Motivation</strong></p>
 <blockquote style="border-left:3px solid var(--accent-p);padding-left:1rem;margin:0.5rem 0;font-style:italic;">"${escHtml(m.quote)}"</blockquote>
 <p style="color:var(--text2);font-size:0.85rem;">— ${escHtml(m.author)}</p>
-<p>You've got this! 💪 Every study session brings you closer to your goal.</p>`,
+<p>You've got this! <i data-lucide="activity" class="icon-inline"></i> Every study session brings you closer to your goal.</p>`,
     type: 'motivation',
     suggestions: ['Create study plan', 'Start Pomodoro', 'Give me a quiz', 'Analyze my progress']
   };
@@ -641,19 +641,19 @@ function getSmartFallback(userMessage) {
   const topTask = tasks.sort((a, b) => (b.priority || 0) - (a.priority || 0))[0];
 
   const contextHint = topTask
-    ? `<p>💡 By the way, your top priority right now is <strong>${escHtml(topTask.subject)}</strong> (${getDaysLeft(topTask.examDate)}d until exam).</p>`
+    ? `<p><i data-lucide="lightbulb" class="icon-inline"></i> By the way, your top priority right now is <strong>${escHtml(topTask.subject)}</strong> (${getDaysLeft(topTask.examDate)}d until exam).</p>`
     : '';
 
   return {
-    text: `<p>🤔 I'm not sure I understood that, but I'm here to help!</p>
+    text: `<p><i data-lucide="help-circle" class="icon-inline"></i> I'm not sure I understood that, but I'm here to help!</p>
 <p>Here's what I can do:</p>
 <ul>
-  <li>📅 <strong>Create a study plan</strong> — personalized schedule</li>
-  <li>📖 <strong>Explain topics</strong> — "explain spaced repetition"</li>
-  <li>🎯 <strong>Quiz you</strong> — practice questions</li>
-  <li>⏰ <strong>Pomodoro timer</strong> — focused study sessions</li>
-  <li>📊 <strong>Analyze progress</strong> — your stats</li>
-  <li>📝 <strong>Summarize</strong> — your study situation</li>
+  <li><i data-lucide="calendar" class="icon-inline"></i> <strong>Create a study plan</strong> — personalized schedule</li>
+  <li><i data-lucide="book-open" class="icon-inline"></i> <strong>Explain topics</strong> — "explain spaced repetition"</li>
+  <li><i data-lucide="help-circle" class="icon-inline"></i> <strong>Quiz you</strong> — practice questions</li>
+  <li><i data-lucide="clock" class="icon-inline"></i> <strong>Pomodoro timer</strong> — focused study sessions</li>
+  <li><i data-lucide="bar-chart-2" class="icon-inline"></i> <strong>Analyze progress</strong> — your stats</li>
+  <li><i data-lucide="file-text" class="icon-inline"></i> <strong>Summarize</strong> — your study situation</li>
 </ul>
 ${contextHint}`,
     type: 'general',

@@ -12,8 +12,10 @@
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
     rel="stylesheet" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/features.css" />
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/depth.css" />
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 </head>
 
 <body>
@@ -22,7 +24,7 @@
   <main class="main-content">
     <div class="page-header fade-in">
       <div>
-        <h1 class="page-title">Add Subject ➕</h1>
+        <h1 class="page-title">Add Subject <i data-lucide="plus" class="icon-inline"></i></h1>
         <p class="page-subtitle">Add a subject and let Planora calculate the priority for you</p>
       </div>
       <a href="index.html" class="btn btn-outline">
@@ -36,7 +38,7 @@
     <div class="add-layout">
       <!-- ── FORM ── -->
       <div class="card add-form-card fade-in">
-        <div class="form-card-icon">📚</div>
+        <div class="form-card-icon"><i data-lucide="book-open"></i></div>
         <h2 class="form-card-title">New Subject</h2>
 
         <form id="addForm" novalidate>
@@ -129,7 +131,7 @@
 
         <!-- Tip card -->
         <div class="card" style="margin-top:1rem;padding:1rem 1.25rem;">
-          <p style="font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:.4rem;">💡 Priority Formula</p>
+          <p style="font-size:.8rem;font-weight:700;color:var(--purple);margin-bottom:.4rem;"><i data-lucide="lightbulb" class="icon-inline"></i> Priority Formula</p>
           <p style="font-size:.82rem;color:var(--text2);line-height:1.6;">
             Higher score = study this first! Anything <strong style="color:var(--c-high)">≥ 0.7</strong> is <strong
               style="color:var(--c-high)">High</strong>, <strong style="color:var(--c-medium)">≥ 0.3</strong> is <strong

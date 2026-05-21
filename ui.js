@@ -12,9 +12,9 @@ function renderNavbar(activePage) {
   const initials = getInitials(user);
 
   const links = [
-    { id: 'dashboard', label: 'Dashboard', icon: '📊', href: 'index.html' },
-    { id: 'add',       label: 'Add Task',  icon: '➕', href: 'add.html'   },
-    { id: 'profile',   label: 'Profile',   icon: '👤', href: 'profile.html'},
+    { id: 'dashboard', label: 'Dashboard', icon: 'layout-dashboard', href: 'index.html' },
+    { id: 'add',       label: 'Add Task',  icon: 'plus-circle', href: 'add.html'   },
+    { id: 'profile',   label: 'Profile',   icon: 'user', href: 'profile.html'},
   ];
 
   nav.innerHTML = `
@@ -31,7 +31,7 @@ function renderNavbar(activePage) {
       <ul class="nav-links" id="navLinks">
         ${links.map(l => `
           <li><a href="${l.href}" class="nav-link ${activePage === l.id ? 'active' : ''}">
-            <span class="nav-icon">${l.icon}</span>${l.label}
+            <span class="nav-icon"><i data-lucide="${l.icon}" class="icon-inline"></i></span>${l.label}
           </a></li>`).join('')}
       </ul>
 
@@ -42,7 +42,9 @@ function renderNavbar(activePage) {
           </svg>
           <kbd class="nav-kbd">⌘K</kbd>
         </button>
-        <button class="nav-icon-btn" id="soundToggleBtn" onclick="if(typeof toggleSound==='function')toggleSound()" title="Toggle Sound" aria-label="Toggle sound">🔊</button>
+        <button class="nav-icon-btn" id="soundToggleBtn" onclick="if(typeof toggleSound==='function')toggleSound()" title="Toggle Sound" aria-label="Toggle sound">
+          <i data-lucide="volume-2" class="icon-inline"></i>
+        </button>
         <button class="theme-toggle-btn" id="themeToggle" onclick="toggleThemePage()" aria-label="Toggle theme"></button>
 
         <div class="nav-avatar-wrap" id="avatarWrap">
@@ -58,8 +60,8 @@ function renderNavbar(activePage) {
               </div>
             </div>
             <div class="nav-dropdown-divider"></div>
-            <a href="profile.html" class="nd-item">👤 Profile &amp; Stats</a>
-            <button class="nd-item nd-logout" onclick="logout()">🚪 Logout</button>
+            <a href="profile.html" class="nd-item"><i data-lucide="user" class="icon-inline"></i> Profile &amp; Stats</a>
+            <button class="nd-item nd-logout" onclick="logout()"><i data-lucide="log-out" class="icon-inline"></i> Logout</button>
           </div>
         </div>
 
@@ -70,6 +72,7 @@ function renderNavbar(activePage) {
     </div>`;
 
   applyThemeIcon();
+  refreshIcons();
 }
 
 function toggleNavDropdown() {
@@ -107,11 +110,14 @@ function toggleThemePage() {
 }
 
 function applyThemeIcon() {
-  const btn = document.getElementById('themeToggle');
+  const btn = document.getElementById('themeToggle') || document.getElementById('themeBtn');
   if (!btn) return;
   const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-  btn.textContent = isDark ? '☀️' : '🌙';
+  btn.innerHTML = isDark 
+    ? '<i data-lucide="sun" class="icon-inline"></i>' 
+    : '<i data-lucide="moon" class="icon-inline"></i>';
   btn.title = isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+  refreshIcons();
 }
 
 /* ─── Toast ─── */
@@ -123,11 +129,17 @@ function showToast(message, type = 'info') {
     c.className = 'toast-container';
     document.body.appendChild(c);
   }
-  const icons = { success: '✅', error: '❌', info: 'ℹ️', warning: '⚠️' };
+  const icons = { 
+    success: '<i data-lucide="check-circle" class="icon-inline"></i>', 
+    error: '<i data-lucide="x-circle" class="icon-inline"></i>', 
+    info: '<i data-lucide="info" class="icon-inline"></i>', 
+    warning: '<i data-lucide="alert-triangle" class="icon-inline"></i>' 
+  };
   const t = document.createElement('div');
   t.className = `toast toast-${type}`;
-  t.innerHTML = `<span class="toast-icon">${icons[type] || '💬'}</span><span>${message}</span>`;
+  t.innerHTML = `<span class="toast-icon">${icons[type] || '<i data-lucide="message-square" class="icon-inline"></i>'}</span><span>${message}</span>`;
   c.appendChild(t);
+  refreshIcons();
   setTimeout(() => { t.classList.add('toast-out'); setTimeout(() => t.remove(), 300); }, 3200);
 }
 
@@ -170,4 +182,21 @@ const QUOTES = [
 
 function getRandomQuote() {
   return QUOTES[Math.floor(Math.random() * QUOTES.length)];
+}
+
+
+/* ═══════════════════════════════════════════════════════════
+   LUCIDE ICON REFRESH UTILITY
+   ═══════════════════════════════════════════════════════════ */
+function refreshIcons() {
+  if (typeof lucide !== 'undefined' && lucide.createIcons) {
+    lucide.createIcons();
+  }
+}
+
+// Auto-refresh icons when DOM is ready
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', refreshIcons);
+} else {
+  refreshIcons();
 }

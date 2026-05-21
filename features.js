@@ -48,35 +48,47 @@ function playSound(type) {
 function toggleSound() {
   _soundEnabled = !_soundEnabled;
   const btn = document.getElementById('soundToggleBtn');
-  if (btn) btn.textContent = _soundEnabled ? '🔊' : '🔇';
-  showToast(_soundEnabled ? '🔊 Sound on' : '🔇 Sound off', 'info');
+  if (btn) {
+    const icon = btn.querySelector('[data-lucide]');
+    if (icon) {
+      icon.setAttribute('data-lucide', _soundEnabled ? 'volume-2' : 'volume-x');
+      refreshIcons();
+    }
+  }
+  showToast(_soundEnabled ? 'Sound enabled' : 'Sound muted', 'info');
   localStorage.setItem('planora_sound', _soundEnabled ? '1' : '0');
 }
 
 function initSound() {
   _soundEnabled = localStorage.getItem('planora_sound') !== '0';
   const btn = document.getElementById('soundToggleBtn');
-  if (btn) btn.textContent = _soundEnabled ? '🔊' : '🔇';
+  if (btn) {
+    const icon = btn.querySelector('[data-lucide]');
+    if (icon) {
+      icon.setAttribute('data-lucide', _soundEnabled ? 'volume-2' : 'volume-x');
+      if (typeof refreshIcons === 'function') refreshIcons();
+    }
+  }
 }
 
 /* ═══════════════════════════════════════════════════════════
    ACHIEVEMENTS SYSTEM
    ═══════════════════════════════════════════════════════════ */
 const ACHIEVEMENTS = [
-  { id: 'first_subject',  icon: '📚', title: 'First Step',       desc: 'Added your first subject',          check: (s,u) => s.total >= 1 },
-  { id: 'first_complete', icon: '✅', title: 'Getting Started',  desc: 'Completed your first task',         check: (s,u) => s.completed >= 1 },
-  { id: 'streak_3',       icon: '🔥', title: '3-Day Streak',     desc: 'Studied 3 days in a row',           check: (s,u) => u.streak >= 3 },
-  { id: 'streak_7',       icon: '🏆', title: 'Week Warrior',     desc: 'Studied 7 days in a row',           check: (s,u) => u.streak >= 7 },
-  { id: 'streak_30',      icon: '💎', title: '30-Day Legend',    desc: 'Studied 30 days in a row',          check: (s,u) => u.streak >= 30 },
-  { id: 'hours_10',       icon: '⏱️', title: '10 Hours Studied', desc: 'Logged 10 total study hours',       check: (s,u) => s.totalMinutes >= 600 },
-  { id: 'hours_50',       icon: '🎓', title: 'Study Marathon',   desc: 'Logged 50 total study hours',       check: (s,u) => s.totalMinutes >= 3000 },
-  { id: 'level_5',        icon: '⭐', title: 'Rising Scholar',   desc: 'Reached Level 5',                   check: (s,u) => (u.level||1) >= 5 },
-  { id: 'level_10',       icon: '🌟', title: 'Master Scholar',   desc: 'Reached Level 10',                  check: (s,u) => (u.level||1) >= 10 },
-  { id: 'tasks_10',       icon: '🎯', title: 'Goal Crusher',     desc: 'Completed 10 tasks',                check: (s,u) => s.completed >= 10 },
-  { id: 'tasks_50',       icon: '🚀', title: 'Unstoppable',      desc: 'Completed 50 tasks',                check: (s,u) => s.completed >= 50 },
-  { id: 'subjects_5',     icon: '📖', title: 'Multitasker',      desc: 'Added 5 subjects at once',          check: (s,u) => s.total >= 5 },
-  { id: 'night_owl',      icon: '🦉', title: 'Night Owl',        desc: 'Studied after 10 PM',               check: (s,u) => u.nightOwl === true },
-  { id: 'early_bird',     icon: '🌅', title: 'Early Bird',       desc: 'Studied before 7 AM',               check: (s,u) => u.earlyBird === true },
+  { id: 'first_subject',  icon: 'book-open', title: 'First Step',       desc: 'Added your first subject',          check: (s,u) => s.total >= 1 },
+  { id: 'first_complete', icon: 'check-circle', title: 'Getting Started',  desc: 'Completed your first task',         check: (s,u) => s.completed >= 1 },
+  { id: 'streak_3',       icon: 'flame', title: '3-Day Streak',     desc: 'Studied 3 days in a row',           check: (s,u) => u.streak >= 3 },
+  { id: 'streak_7',       icon: 'trophy', title: 'Week Warrior',     desc: 'Studied 7 days in a row',           check: (s,u) => u.streak >= 7 },
+  { id: 'streak_30',      icon: 'gem', title: '30-Day Legend',    desc: 'Studied 30 days in a row',          check: (s,u) => u.streak >= 30 },
+  { id: 'hours_10',       icon: 'clock', title: '10 Hours Studied', desc: 'Logged 10 total study hours',       check: (s,u) => s.totalMinutes >= 600 },
+  { id: 'hours_50',       icon: 'graduation-cap', title: 'Study Marathon',   desc: 'Logged 50 total study hours',       check: (s,u) => s.totalMinutes >= 3000 },
+  { id: 'level_5',        icon: 'star', title: 'Rising Scholar',   desc: 'Reached Level 5',                   check: (s,u) => (u.level||1) >= 5 },
+  { id: 'level_10',       icon: 'sparkles', title: 'Master Scholar',   desc: 'Reached Level 10',                  check: (s,u) => (u.level||1) >= 10 },
+  { id: 'tasks_10',       icon: 'target', title: 'Goal Crusher',     desc: 'Completed 10 tasks',                check: (s,u) => s.completed >= 10 },
+  { id: 'tasks_50',       icon: 'rocket', title: 'Unstoppable',      desc: 'Completed 50 tasks',                check: (s,u) => s.completed >= 50 },
+  { id: 'subjects_5',     icon: 'library', title: 'Multitasker',      desc: 'Added 5 subjects at once',          check: (s,u) => s.total >= 5 },
+  { id: 'night_owl',      icon: 'moon', title: 'Night Owl',        desc: 'Studied after 10 PM',               check: (s,u) => u.nightOwl === true },
+  { id: 'early_bird',     icon: 'sunrise', title: 'Early Bird',       desc: 'Studied before 7 AM',               check: (s,u) => u.earlyBird === true },
 ];
 
 function getUnlockedAchievements() {
@@ -119,13 +131,14 @@ function showAchievementUnlock(achievement) {
   const el = document.createElement('div');
   el.className = 'achievement-popup bounce-in';
   el.innerHTML = `
-    <div class="ach-pop-icon">${achievement.icon}</div>
+    <div class="ach-pop-icon"><i data-lucide="${achievement.icon}" style="width:2.5rem;height:2.5rem;stroke-width:2"></i></div>
     <div class="ach-pop-body">
       <div class="ach-pop-label">Achievement Unlocked!</div>
       <div class="ach-pop-title">${escHtml(achievement.title)}</div>
       <div class="ach-pop-desc">${escHtml(achievement.desc)}</div>
     </div>`;
   document.body.appendChild(el);
+  if (typeof refreshIcons === 'function') refreshIcons();
   setTimeout(() => { el.classList.add('ach-pop-out'); setTimeout(() => el.remove(), 500); }, 3500);
 }
 
@@ -146,24 +159,25 @@ function renderAchievementsPanel() {
       ${ACHIEVEMENTS.map(a => {
         const done = unlocked.includes(a.id);
         return `<div class="ach-badge ${done ? 'unlocked' : 'locked'}" title="${escHtml(a.desc)}">
-          <div class="ach-badge-icon">${done ? a.icon : '🔒'}</div>
+          <div class="ach-badge-icon">${done ? `<i data-lucide="${a.icon}" class="icon-inline-xl"></i>` : '<i data-lucide="lock" class="icon-inline-xl"></i>'}</div>
           <div class="ach-badge-name">${escHtml(a.title)}</div>
         </div>`;
       }).join('')}
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════════════════
    DAILY QUESTS
    ═══════════════════════════════════════════════════════════ */
 const QUEST_TEMPLATES = [
-  { id: 'q_session',   icon: '⏱️', title: 'Focus Block',      desc: 'Complete 1 study session',    xp: 100, check: () => getDailySessionCount() >= 1 },
-  { id: 'q_sessions3', icon: '🔥', title: 'Triple Session',   desc: 'Complete 3 study sessions',   xp: 250, check: () => getDailySessionCount() >= 3 },
-  { id: 'q_task',      icon: '✅', title: 'Task Done',        desc: 'Mark 1 task as complete',     xp: 150, check: () => getDailyCompletedTasks() >= 1 },
-  { id: 'q_tasks2',    icon: '🎯', title: 'Double Down',      desc: 'Complete 2 tasks today',      xp: 300, check: () => getDailyCompletedTasks() >= 2 },
-  { id: 'q_hour',      icon: '📚', title: 'Study Hour',       desc: 'Study for 60 minutes today',  xp: 200, check: () => getDailyStudyMinutes() >= 60 },
-  { id: 'q_2hours',    icon: '🏆', title: 'Deep Work',        desc: 'Study for 2 hours today',     xp: 400, check: () => getDailyStudyMinutes() >= 120 },
-  { id: 'q_subjects2', icon: '📖', title: 'Variety',          desc: 'Study 2 different subjects',  xp: 200, check: () => getDailySubjectCount() >= 2 },
+  { id: 'q_session',   icon: 'clock', title: 'Focus Block',      desc: 'Complete 1 study session',    xp: 100, check: () => getDailySessionCount() >= 1 },
+  { id: 'q_sessions3', icon: 'flame', title: 'Triple Session',   desc: 'Complete 3 study sessions',   xp: 250, check: () => getDailySessionCount() >= 3 },
+  { id: 'q_task',      icon: 'check-circle', title: 'Task Done',        desc: 'Mark 1 task as complete',     xp: 150, check: () => getDailyCompletedTasks() >= 1 },
+  { id: 'q_tasks2',    icon: 'target', title: 'Double Down',      desc: 'Complete 2 tasks today',      xp: 300, check: () => getDailyCompletedTasks() >= 2 },
+  { id: 'q_hour',      icon: 'book-open', title: 'Study Hour',       desc: 'Study for 60 minutes today',  xp: 200, check: () => getDailyStudyMinutes() >= 60 },
+  { id: 'q_2hours',    icon: 'trophy', title: 'Deep Work',        desc: 'Study for 2 hours today',     xp: 400, check: () => getDailyStudyMinutes() >= 120 },
+  { id: 'q_subjects2', icon: 'library', title: 'Variety',          desc: 'Study 2 different subjects',  xp: 200, check: () => getDailySubjectCount() >= 2 },
 ];
 
 function getDailySessionCount() {
@@ -254,7 +268,7 @@ function renderQuestsWidget() {
 
   container.innerHTML = `
     <div class="quests-header">
-      <span class="quests-title">⚔️ Daily Quests</span>
+      <span class="quests-title"><i data-lucide="swords" class="icon-inline"></i> Daily Quests</span>
       <span class="quests-count">${count}/${quests.length}</span>
     </div>
     <div class="quests-list">
@@ -262,17 +276,18 @@ function renderQuestsWidget() {
         const isDone = done.includes(q.id);
         const progress = q.check();
         return `<div class="quest-item ${isDone ? 'quest-done' : ''}">
-          <span class="quest-icon">${q.icon}</span>
+          <span class="quest-icon"><i data-lucide="${q.icon}" class="icon-inline-lg"></i></span>
           <div class="quest-body">
             <div class="quest-name">${escHtml(q.title)}</div>
             <div class="quest-desc">${escHtml(q.desc)}</div>
           </div>
           <div class="quest-reward">
-            ${isDone ? '<span class="quest-check">✅</span>' : `<span class="quest-xp">+${q.xp} XP</span>`}
+            ${isDone ? '<span class="quest-check"><i data-lucide="check" class="icon-inline"></i></span>' : `<span class="quest-xp">+${q.xp} XP</span>`}
           </div>
         </div>`;
       }).join('')}
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -347,20 +362,20 @@ function getCmdItems(query) {
   const tasks = getTasks().filter(t => !t.completed);
 
   const actions = [
-    { icon: '➕', label: 'Add Subject',        sub: 'Navigate to add page',       action: () => window.location.href = 'add.html' },
-    { icon: '📊', label: 'Dashboard',           sub: 'Go to dashboard',            action: () => window.location.href = 'index.html' },
-    { icon: '👤', label: 'Profile & Stats',     sub: 'View your progress',         action: () => window.location.href = 'profile.html' },
-    { icon: '🤖', label: 'AI Study Planner',    sub: 'Generate a study plan',      action: () => { closeCommandPalette(); if(typeof openAIPlanner==='function') openAIPlanner(); } },
-    { icon: '⏱️', label: 'Start Focus Timer',   sub: 'Begin a Pomodoro session',   action: () => { closeCommandPalette(); document.querySelector('.tw-btn-primary')?.click(); } },
-    { icon: '🎯', label: 'Spin the Wheel',      sub: 'Random subject picker',      action: () => { closeCommandPalette(); document.getElementById('spinBtn')?.click(); } },
-    { icon: '🌙', label: 'Toggle Theme',        sub: 'Switch dark/light mode',     action: () => { closeCommandPalette(); if(typeof toggleThemePage==='function') toggleThemePage(); } },
-    { icon: '🔊', label: 'Toggle Sound',        sub: 'Mute or unmute sounds',      action: () => { closeCommandPalette(); toggleSound(); } },
-    { icon: '💬', label: 'Open AI Chat',        sub: 'Chat with Planora AI',       action: () => { closeCommandPalette(); const w=document.getElementById('aiChatWidget'); if(w) { w.classList.remove('minimized'); w.style.display='flex'; } } },
-    { icon: '✨', label: 'Load Demo Data',      sub: 'Try with sample subjects',   action: () => { closeCommandPalette(); if(typeof loadDemoData==='function') loadDemoData(); } },
+    { icon: 'plus-circle', label: 'Add Subject',        sub: 'Navigate to add page',       action: () => window.location.href = 'add.html' },
+    { icon: 'layout-dashboard', label: 'Dashboard',           sub: 'Go to dashboard',            action: () => window.location.href = 'index.html' },
+    { icon: 'user', label: 'Profile & Stats',     sub: 'View your progress',         action: () => window.location.href = 'profile.html' },
+    { icon: 'bot', label: 'AI Study Planner',    sub: 'Generate a study plan',      action: () => { closeCommandPalette(); if(typeof openAIPlanner==='function') openAIPlanner(); } },
+    { icon: 'clock', label: 'Start Focus Timer',   sub: 'Begin a Pomodoro session',   action: () => { closeCommandPalette(); document.querySelector('.tw-btn-primary')?.click(); } },
+    { icon: 'disc', label: 'Spin the Wheel',      sub: 'Random subject picker',      action: () => { closeCommandPalette(); document.getElementById('spinBtn')?.click(); } },
+    { icon: 'moon', label: 'Toggle Theme',        sub: 'Switch dark/light mode',     action: () => { closeCommandPalette(); if(typeof toggleThemePage==='function') toggleThemePage(); } },
+    { icon: 'volume-2', label: 'Toggle Sound',        sub: 'Mute or unmute sounds',      action: () => { closeCommandPalette(); toggleSound(); } },
+    { icon: 'message-circle', label: 'Open AI Chat',        sub: 'Chat with Planora AI',       action: () => { closeCommandPalette(); const w=document.getElementById('aiChatWidget'); if(w) { w.classList.remove('minimized'); w.style.display='flex'; } } },
+    { icon: 'sparkles', label: 'Load Demo Data',      sub: 'Try with sample subjects',   action: () => { closeCommandPalette(); if(typeof loadDemoData==='function') loadDemoData(); } },
   ];
 
   const subjectItems = tasks.map(t => ({
-    icon: '📚',
+    icon: 'book-open',
     label: t.subject,
     sub: `${t.difficulty} · ${getDaysLeft(t.examDate)}d left`,
     action: () => { closeCommandPalette(); if(typeof startStudyTimer==='function') startStudyTimer(t.id, t.subject, t.recommendedMinutes || 25); }
@@ -386,7 +401,7 @@ function renderCmdResults(query) {
 
   container.innerHTML = items.map((item, i) => `
     <div class="cmd-item ${i === 0 ? 'cmd-selected' : ''}" data-idx="${i}" onclick="executeCmdItem(${i})">
-      <span class="cmd-item-icon">${item.icon}</span>
+      <span class="cmd-item-icon"><i data-lucide="${item.icon}" class="icon-inline"></i></span>
       <div class="cmd-item-body">
         <div class="cmd-item-label">${escHtml(item.label)}</div>
         <div class="cmd-item-sub">${escHtml(item.sub)}</div>
@@ -394,6 +409,7 @@ function renderCmdResults(query) {
     </div>`).join('');
 
   container._items = items;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 function executeCmdItem(idx) {
@@ -466,7 +482,8 @@ function renderExamPredictor() {
     .slice(0, 4);
 
   if (tasks.length === 0) {
-    container.innerHTML = `<div class="chart-empty-state"><div class="chart-empty-icon">🔮</div><div class="chart-empty-title">No exams to predict</div><div class="chart-empty-sub">Add subjects with exam dates to see your preparedness score.</div></div>`;
+    container.innerHTML = `<div class="chart-empty-state"><div class="chart-empty-icon"><i data-lucide="sparkles" style="width:1.5em;height:1.5em;"></i></div><div class="chart-empty-title">No exams to predict</div><div class="chart-empty-sub">Add subjects with exam dates to see your preparedness score.</div></div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
     return;
   }
 
@@ -523,13 +540,13 @@ function detectBurnout() {
   const zeroDays = last7.filter(m => m === 0).length;
 
   if (avgPrev > 30 && avgLast < avgPrev * 0.4) {
-    return { type: 'drop', msg: `📉 Study activity dropped ${Math.round((1 - avgLast/avgPrev)*100)}% this week. Consider a lighter session to rebuild momentum.` };
+    return { type: 'drop', msg: `<i data-lucide="trending-down" class="icon-inline"></i> Study activity dropped ${Math.round((1 - avgLast/avgPrev)*100)}% this week. Consider a lighter session to rebuild momentum.` };
   }
   if (zeroDays >= 4) {
-    return { type: 'inactive', msg: `😴 You've missed ${zeroDays} days this week. Even 15 minutes counts — start small!` };
+    return { type: 'inactive', msg: `<i data-lucide="frown" class="icon-inline"></i> You've missed ${zeroDays} days this week. Even 15 minutes counts — start small!` };
   }
   if (avgLast > 240) {
-    return { type: 'overwork', msg: `⚠️ You're averaging ${Math.round(avgLast/60)}h/day. Make sure to rest — sleep is when memory consolidates!` };
+    return { type: 'overwork', msg: `<i data-lucide="alert-triangle" class="icon-inline"></i> You're averaging ${Math.round(avgLast/60)}h/day. Make sure to rest — sleep is when memory consolidates!` };
   }
   return null;
 }
@@ -547,6 +564,7 @@ function renderBurnoutAlert() {
       <span class="burnout-msg">${result.msg}</span>
       <button class="burnout-dismiss" onclick="this.closest('.burnout-alert').parentElement.style.display='none'">✕</button>
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -562,27 +580,28 @@ function renderQuickActions() {
   container.innerHTML = `
     <div class="quick-actions-row stagger">
       <button class="quick-action-btn" onclick="document.querySelector('.tw-btn-primary')?.click(); playSound('click')">
-        <span class="qa-icon">⏱️</span>
+        <span class="qa-icon"><i data-lucide="clock" class="icon-inline"></i></span>
         <span class="qa-label">Start Timer</span>
       </button>
       <a href="add.html" class="quick-action-btn">
-        <span class="qa-icon">➕</span>
+        <span class="qa-icon"><i data-lucide="plus-circle" class="icon-inline"></i></span>
         <span class="qa-label">Add Subject</span>
       </a>
       <button class="quick-action-btn" onclick="openAIPlanner(); playSound('click')">
-        <span class="qa-icon">🤖</span>
+        <span class="qa-icon"><i data-lucide="bot" class="icon-inline"></i></span>
         <span class="qa-label">AI Planner</span>
       </button>
       <button class="quick-action-btn" onclick="toggleCommandPalette(); playSound('click')">
-        <span class="qa-icon">⌘</span>
+        <span class="qa-icon"><i data-lucide="command" class="icon-inline"></i></span>
         <span class="qa-label">Commands</span>
       </button>
       ${topTask ? `
       <button class="quick-action-btn qa-priority" onclick="startStudyTimer('${topTask.id}','${escHtml(topTask.subject)}',${topTask.recommendedMinutes||25}); playSound('click')">
-        <span class="qa-icon">🎯</span>
+        <span class="qa-icon"><i data-lucide="target" class="icon-inline"></i></span>
         <span class="qa-label">Study ${escHtml(topTask.subject.split(' ')[0])}</span>
       </button>` : ''}
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════════════════
@@ -603,19 +622,19 @@ function renderPersonalizedInsights() {
   const urgent = tasks.filter(t => getDaysLeft(t.examDate) <= 14 && getDaysLeft(t.examDate) > 0)
     .sort((a,b) => getDaysLeft(a.examDate) - getDaysLeft(b.examDate))[0];
   if (urgent) {
-    insights.push({ icon: '📅', text: `You're <strong>${getDaysLeft(urgent.examDate)} days</strong> away from your <strong>${escHtml(urgent.subject)}</strong> exam.` });
+    insights.push({ icon: 'calendar', text: `You're <strong>${getDaysLeft(urgent.examDate)} days</strong> away from your <strong>${escHtml(urgent.subject)}</strong> exam.` });
   }
 
   // Weekly comparison
   const thisWeek = weekly.slice(0, 7).reduce((s,d) => s+d.minutes, 0);
   const lastWeek = weekly.slice(0, 7).reduce((s,d) => s+d.minutes, 0); // simplified
   if (thisWeek > 0) {
-    insights.push({ icon: '📈', text: `You've studied <strong>${Math.round(thisWeek/60*10)/10} hours</strong> this week.` });
+    insights.push({ icon: 'trending-up', text: `You've studied <strong>${Math.round(thisWeek/60*10)/10} hours</strong> this week.` });
   }
 
   // Streak insight
   if (user.streak >= 3) {
-    insights.push({ icon: '🔥', text: `<strong>${user.streak}-day streak!</strong> Keep it going — consistency beats intensity.` });
+    insights.push({ icon: 'flame', text: `<strong>${user.streak}-day streak!</strong> Keep it going — consistency beats intensity.` });
   }
 
   // Level insight
@@ -624,21 +643,22 @@ function renderPersonalizedInsights() {
   const nextLevelXP = Math.pow(level, 2) * 500;
   const xpNeeded = nextLevelXP - xp;
   if (xpNeeded < 500) {
-    insights.push({ icon: '⭐', text: `Only <strong>${xpNeeded} XP</strong> until Level ${level+1}!` });
+    insights.push({ icon: 'star', text: `Only <strong>${xpNeeded} XP</strong> until Level ${level+1}!` });
   }
 
   if (insights.length === 0) {
-    insights.push({ icon: '💡', text: 'Add subjects and start studying to see personalized insights here.' });
+    insights.push({ icon: 'lightbulb', text: 'Add subjects and start studying to see personalized insights here.' });
   }
 
   container.innerHTML = `
     <div class="insights-row">
       ${insights.slice(0,3).map(ins => `
         <div class="insight-chip">
-          <span class="insight-icon">${ins.icon}</span>
+          <span class="insight-icon"><i data-lucide="${ins.icon}" class="icon-inline"></i></span>
           <span class="insight-text">${ins.text}</span>
         </div>`).join('')}
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════════════════

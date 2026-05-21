@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="css/animations.css" />
   <link rel="stylesheet" href="css/features.css" />
   <link rel="stylesheet" href="css/depth.css" />
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.344.0/dist/umd/lucide.min.js"></script>
 </head>
 
 <body>
@@ -23,7 +24,7 @@
   <main class="main-content">
     <div class="page-header fade-in">
       <div>
-        <h1 class="page-title">Profile &amp; Stats 📊</h1>
+        <h1 class="page-title">Profile &amp; Stats <i data-lucide="bar-chart-2" class="icon-inline"></i></h1>
         <p class="page-subtitle">Your study journey at a glance</p>
       </div>
       <button class="btn btn-outline btn-sm" onclick="showResetModal()">Reset All Data</button>
@@ -40,13 +41,13 @@
             Scholar</div>
           <div class="profile-tagline"
             style="text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 1.5rem;">Powered by
-            Planora AI ✨</div>
+            Planora AI <i data-lucide="sparkles" class="icon-inline"></i></div>
 
           <div class="profile-stats-mini"
             style="display: flex; justify-content: space-around; border-top: 1px solid var(--glass-b); padding-top: 1.5rem;">
             <div style="text-align:center">
               <div class="ps-mini-val" id="psStreak"
-                style="font-size: 1.25rem; font-weight: 800; color:var(--accent-pk)">🔥 0</div>
+                style="font-size: 1.25rem; font-weight: 800; color:var(--accent-pk)"><i data-lucide="flame" class="icon-inline"></i> 0</div>
               <div class="ps-mini-label" style="font-size: 0.7rem; color: var(--muted);">Streak</div>
             </div>
             <div style="text-align:center">
@@ -122,7 +123,7 @@
 
     <!-- ══ ACHIEVEMENTS SECTION ══ -->
     <div class="card fade-in" style="--delay:.15s; margin-top:2rem">
-      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;">🏆 Achievements</h3>
+      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;"><i data-lucide="trophy" class="icon-inline"></i> Achievements</h3>
       <div id="profileAchievements">
         <!-- Populated by JS -->
       </div>
@@ -130,7 +131,7 @@
 
     <!-- ══ WEEKLY STUDY GRAPH ══ -->
     <div class="card fade-in" style="--delay:.2s; margin-top:1.5rem">
-      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;">📈 Weekly Study Hours</h3>
+      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;"><i data-lucide="trending-up" class="icon-inline"></i> Weekly Study Hours</h3>
       <div id="profileWeeklyGraph" style="height: 250px;">
         <!-- Populated by JS -->
       </div>
@@ -139,14 +140,14 @@
     <!-- ══ SUBJECT PERFORMANCE ══ -->
     <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-top: 1.5rem;">
       <div class="card fade-in" style="--delay:.25s">
-        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;">💪 Strongest Subject</h3>
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;"><i data-lucide="award" class="icon-inline"></i> Strongest Subject</h3>
         <div id="strongestSubject">
           <!-- Populated by JS -->
         </div>
       </div>
 
       <div class="card fade-in" style="--delay:.3s">
-        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;">📚 Needs More Focus</h3>
+        <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;"><i data-lucide="book-open" class="icon-inline"></i> Needs More Focus</h3>
         <div id="weakestSubject">
           <!-- Populated by JS -->
         </div>
@@ -155,7 +156,7 @@
 
     <!-- ══ STUDY HEATMAP ══ -->
     <div class="card fade-in" style="--delay:.35s; margin-top:1.5rem">
-      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;">🔥 30-Day Study Activity</h3>
+      <h3 style="font-size:1.1rem; font-weight:800; margin-bottom:1.5rem;"><i data-lucide="flame" class="icon-inline"></i> 30-Day Study Activity</h3>
       <div id="profileHeatmap">
         <!-- Populated by JS -->
       </div>
@@ -165,7 +166,7 @@
   <!-- Reset confirm modal -->
   <div id="resetModal" class="timer-overlay" style="display:none;">
     <div class="timer-card">
-      <div style="font-size:2.5rem;margin-bottom:.75rem;">⚠️</div>
+      <div style="font-size:2.5rem;margin-bottom:.75rem;"><i data-lucide="alert-triangle" class="icon-inline" style="width:1.5em;height:1.5em;"></i></div>
       <h3 style="font-size:1.1rem;font-weight:800;margin-bottom:.5rem;">Reset All Data?</h3>
       <p style="font-size:.875rem;color:var(--text2);margin-bottom:1.5rem;">This will permanently delete all your
         subjects and study history. This cannot be undone.</p>

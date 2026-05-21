@@ -18,7 +18,11 @@ function refreshProfile() {
   // Profile Hero
   setText('profileAv', getInitials(name));
   setText('profileName', name);
-  setText('psStreak', `🔥 ${stats.streak}`);
+  const streakEl = document.getElementById('psStreak');
+  if (streakEl) {
+    streakEl.innerHTML = `<i data-lucide="flame" class="icon-inline"></i> ${stats.streak}`;
+  }
+  if (typeof refreshIcons === 'function') refreshIcons();
   setText('psTotalTime', `${Math.round(stats.totalMinutes / 60)}h`);
   setText('psLevel', `Lvl ${user.level || 1}`);
 
@@ -61,16 +65,21 @@ function renderPriorityAnalysis() {
 
   const priorities = ['high', 'medium', 'low'];
   const colors = { high: 'var(--c-high)', medium: 'var(--c-medium)', low: 'var(--c-low)' };
-  const labels = { high: '🔴 High Priority', medium: '🟡 Medium', low: '🟢 Low' };
+  const labels = { 
+    high: '<i data-lucide="alert-circle" class="icon-inline" style="color:var(--c-high)"></i> High Priority', 
+    medium: '<i data-lucide="alert-triangle" class="icon-inline" style="color:var(--c-medium)"></i> Medium', 
+    low: '<i data-lucide="check-circle" class="icon-inline" style="color:var(--c-low)"></i> Low' 
+  };
 
   if (tasks.length === 0) {
     container.innerHTML = `
       <div class="empty-state-rich" style="padding:1.5rem;border:1px dashed var(--glass-b);">
-        <div class="empty-illustration" style="font-size:2.5rem;margin-bottom:.5rem">📊</div>
+        <div class="empty-illustration" style="font-size:2.5rem;margin-bottom:.5rem"><i data-lucide="bar-chart-2" style="width:1.5em;height:1.5em;"></i></div>
         <div class="empty-title" style="font-size:1rem">No subjects yet</div>
         <div class="empty-sub" style="font-size:.85rem;margin-bottom:1rem">Add subjects to see your priority breakdown — high, medium, and low urgency at a glance.</div>
         <a href="add.html" class="btn btn-primary btn-sm">Add First Subject</a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
     return;
   }
 
@@ -79,8 +88,8 @@ function renderPriorityAnalysis() {
     const pct = Math.round((count / tasks.length) * 100);
     return `
       <div style="margin-bottom: 1rem;">
-        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text2);">
-          <span>${labels[p]}</span>
+        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 600; margin-bottom: 0.3rem; color: var(--text2); align-items: center;">
+          <span style="display: inline-flex; align-items: center; gap: 0.25rem;">${labels[p]}</span>
           <span>${count} (${pct}%)</span>
         </div>
         <div style="height: 6px; background: var(--glass-b); border-radius: 3px; overflow: hidden;">
@@ -89,6 +98,7 @@ function renderPriorityAnalysis() {
       </div>
     `;
   }).join('');
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ─── Reset Logic ─── */
@@ -124,20 +134,20 @@ function renderProfileAchievements() {
 
   // Get achievements from features.js
   const ACHIEVEMENTS = [
-    { id: 'first_subject',  icon: '📚', title: 'First Step',       desc: 'Added your first subject' },
-    { id: 'first_complete', icon: '✅', title: 'Getting Started',  desc: 'Completed your first task' },
-    { id: 'streak_3',       icon: '🔥', title: '3-Day Streak',     desc: 'Studied 3 days in a row' },
-    { id: 'streak_7',       icon: '🏆', title: 'Week Warrior',     desc: 'Studied 7 days in a row' },
-    { id: 'streak_30',      icon: '💎', title: '30-Day Legend',    desc: 'Studied 30 days in a row' },
-    { id: 'hours_10',       icon: '⏱️', title: '10 Hours Studied', desc: 'Logged 10 total study hours' },
-    { id: 'hours_50',       icon: '🎓', title: 'Study Marathon',   desc: 'Logged 50 total study hours' },
-    { id: 'level_5',        icon: '⭐', title: 'Rising Scholar',   desc: 'Reached Level 5' },
-    { id: 'level_10',       icon: '🌟', title: 'Master Scholar',   desc: 'Reached Level 10' },
-    { id: 'tasks_10',       icon: '🎯', title: 'Goal Crusher',     desc: 'Completed 10 tasks' },
-    { id: 'tasks_50',       icon: '🚀', title: 'Unstoppable',      desc: 'Completed 50 tasks' },
-    { id: 'subjects_5',     icon: '📖', title: 'Multitasker',      desc: 'Added 5 subjects at once' },
-    { id: 'night_owl',      icon: '🦉', title: 'Night Owl',        desc: 'Studied after 10 PM' },
-    { id: 'early_bird',     icon: '🌅', title: 'Early Bird',       desc: 'Studied before 7 AM' },
+    { id: 'first_subject',  icon: 'book-open', title: 'First Step',       desc: 'Added your first subject' },
+    { id: 'first_complete', icon: 'check-circle', title: 'Getting Started',  desc: 'Completed your first task' },
+    { id: 'streak_3',       icon: 'flame', title: '3-Day Streak',     desc: 'Studied 3 days in a row' },
+    { id: 'streak_7',       icon: 'trophy', title: 'Week Warrior',     desc: 'Studied 7 days in a row' },
+    { id: 'streak_30',      icon: 'gem', title: '30-Day Legend',    desc: 'Studied 30 days in a row' },
+    { id: 'hours_10',       icon: 'clock', title: '10 Hours Studied', desc: 'Logged 10 total study hours' },
+    { id: 'hours_50',       icon: 'graduation-cap', title: 'Study Marathon',   desc: 'Logged 50 total study hours' },
+    { id: 'level_5',        icon: 'star', title: 'Rising Scholar',   desc: 'Reached Level 5' },
+    { id: 'level_10',       icon: 'sparkles', title: 'Master Scholar',   desc: 'Reached Level 10' },
+    { id: 'tasks_10',       icon: 'target', title: 'Goal Crusher',     desc: 'Completed 10 tasks' },
+    { id: 'tasks_50',       icon: 'rocket', title: 'Unstoppable',      desc: 'Completed 50 tasks' },
+    { id: 'subjects_5',     icon: 'library', title: 'Multitasker',      desc: 'Added 5 subjects at once' },
+    { id: 'night_owl',      icon: 'moon', title: 'Night Owl',        desc: 'Studied after 10 PM' },
+    { id: 'early_bird',     icon: 'sunrise', title: 'Early Bird',       desc: 'Studied before 7 AM' },
   ];
 
   const unlocked = JSON.parse(localStorage.getItem('planora_achievements') || '[]');
@@ -161,12 +171,13 @@ function renderProfileAchievements() {
         const done = unlocked.includes(a.id);
         return `
           <div class="profile-ach-badge ${done ? 'unlocked' : 'locked'}" title="${escHtml(a.desc)}">
-            <div class="profile-ach-icon">${done ? a.icon : '🔒'}</div>
+            <div class="profile-ach-icon">${done ? `<i data-lucide="${a.icon}" class="icon-inline-xl"></i>` : '<i data-lucide="lock" class="icon-inline-xl"></i>'}</div>
             <div class="profile-ach-name">${escHtml(a.title)}</div>
             ${done ? '<div class="profile-ach-check">✓</div>' : ''}
           </div>`;
       }).join('')}
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ═══════════════════════════════════════════════
@@ -212,12 +223,13 @@ function renderStrongestWeakest() {
   if (tasks.length === 0) {
     const emptyHtml = `
       <div style="text-align: center; padding: 2rem 1rem; color: var(--muted);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">📚</div>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="book-open" style="width:1.5em;height:1.5em;"></i></div>
         <div style="font-size: 0.85rem;">No subjects yet</div>
         <a href="add.html" class="btn btn-primary btn-sm" style="margin-top: 1rem;">Add Subject</a>
       </div>`;
     strongestContainer.innerHTML = emptyHtml;
     weakestContainer.innerHTML = emptyHtml;
+    if (typeof refreshIcons === 'function') refreshIcons();
     return;
   }
 
@@ -244,20 +256,22 @@ function renderStrongestWeakest() {
     const daysLeft = getDaysLeft(strongest.examDate);
     strongestContainer.innerHTML = `
       <div style="text-align: center; padding: 1.5rem;">
-        <div style="font-size: 3rem; margin-bottom: 0.75rem;">💪</div>
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;"><i data-lucide="award" style="width:3rem;height:3rem;stroke-width:1.5"></i></div>
         <div style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem;">${escHtml(strongest.subject)}</div>
         <div style="font-size: 2rem; font-weight: 900; color: var(--accent-c); margin-bottom: 0.25rem;">${hours}h</div>
         <div style="font-size: 0.8rem; color: var(--muted);">Total study time</div>
         <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: var(--glass-b); border-radius: 8px; font-size: 0.8rem;">
-          📅 ${daysLeft > 0 ? `${daysLeft} days until exam` : 'Exam passed'}
+          <i data-lucide="calendar" class="icon-inline-sm"></i> ${daysLeft > 0 ? `${daysLeft} days until exam` : 'Exam passed'}
         </div>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
   } else {
     strongestContainer.innerHTML = `
       <div style="text-align: center; padding: 2rem 1rem; color: var(--muted);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="clock" class="icon-inline-xl"></i></div>
         <div style="font-size: 0.85rem;">Start studying to see your strongest subject</div>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
   }
 
   // Render weakest
@@ -267,28 +281,31 @@ function renderStrongestWeakest() {
     const isUrgent = daysLeft <= 7;
     weakestContainer.innerHTML = `
       <div style="text-align: center; padding: 1.5rem;">
-        <div style="font-size: 3rem; margin-bottom: 0.75rem;">📚</div>
+        <div style="font-size: 3rem; margin-bottom: 0.75rem;"><i data-lucide="book-open" style="width:3rem;height:3rem;stroke-width:1.5"></i></div>
         <div style="font-size: 1.1rem; font-weight: 800; margin-bottom: 0.5rem;">${escHtml(weakest.subject)}</div>
         <div style="font-size: 2rem; font-weight: 900; color: var(--accent-pk); margin-bottom: 0.25rem;">${hours}h</div>
         <div style="font-size: 0.8rem; color: var(--muted);">Needs more attention</div>
         <div style="margin-top: 1rem; padding: 0.5rem 1rem; background: ${isUrgent ? 'rgba(244,63,94,0.1)' : 'var(--glass-b)'}; border-radius: 8px; font-size: 0.8rem; color: ${isUrgent ? '#f43f5e' : 'var(--text2)'};">
-          ${isUrgent ? '⚠️' : '📅'} ${daysLeft > 0 ? `${daysLeft} days left` : 'Overdue'}
+          <i data-lucide="${isUrgent ? 'alert-triangle' : 'calendar'}" class="icon-inline-sm"></i> ${daysLeft > 0 ? `${daysLeft} days left` : 'Overdue'}
         </div>
         <a href="index.html" class="btn btn-primary btn-sm" style="margin-top: 1rem; width: 100%;">Start Studying</a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
   } else if (sorted.length === 1) {
     weakestContainer.innerHTML = `
       <div style="text-align: center; padding: 2rem 1rem; color: var(--muted);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">➕</div>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="plus-circle" class="icon-inline-xl"></i></div>
         <div style="font-size: 0.85rem;">Add more subjects to compare</div>
         <a href="add.html" class="btn btn-outline btn-sm" style="margin-top: 1rem;">Add Subject</a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
   } else {
     weakestContainer.innerHTML = `
       <div style="text-align: center; padding: 2rem 1rem; color: var(--muted);">
-        <div style="font-size: 2rem; margin-bottom: 0.5rem;">⏱️</div>
+        <div style="font-size: 2rem; margin-bottom: 0.5rem;"><i data-lucide="clock" class="icon-inline-xl"></i></div>
         <div style="font-size: 0.85rem;">Start studying to see which subjects need focus</div>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
   }
 }
 

@@ -118,13 +118,14 @@ function renderTodayPlan() {
           </div>
           <div class="empty-plan-step">
             <span class="empty-plan-num">3</span>
-            <span>AI builds your daily schedule ✨</span>
+            <span>AI builds your daily schedule <i data-lucide="sparkles" class="icon-inline"></i></span>
           </div>
         </div>
         <a href="add.html" class="btn btn-primary btn-sm" style="margin-top:.75rem;width:100%;justify-content:center">
           + Add First Subject
         </a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
     if (totalTimeEl) totalTimeEl.textContent = '0 hr 0 min';
     return;
   }
@@ -177,8 +178,9 @@ function renderAISuggestion() {
   const top = suggestions[0];
   if (!top) return;
 
-  text.textContent = `${top.icon} ${top.message}`;
+  text.innerHTML = `<i data-lucide="${top.icon}" class="icon-inline"></i> ${escHtml(top.message)}`;
   box.className = `ai-box fade-in ${top.type || 'info'}`;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ─── Tasks Grid ─── */
@@ -209,10 +211,12 @@ function renderTasks() {
 
   if (tasks.length === 0) {
     grid.innerHTML = buildEmpty();
+    refreshIcons();
     return;
   }
 
   grid.innerHTML = tasks.map((t, i) => buildCard(t, i)).join('');
+  refreshIcons();
 }
 
 function buildCard(t, idx) {
@@ -229,18 +233,18 @@ function buildCard(t, idx) {
         <span class="priority-badge pb-${pl}">${pl}</span>
       </div>
       <div class="tc-meta">
-        <span class="tc-chip">⚡ Diff: ${t.difficulty}</span>
-        <span class="tc-chip ${urgentClass}">📅 ${daysLabel}</span>
+        <span class="tc-chip"><i data-lucide="zap" class="icon-inline"></i> Diff: ${t.difficulty}</span>
+        <span class="tc-chip ${urgentClass}"><i data-lucide="calendar" class="icon-inline"></i> ${daysLabel}</span>
       </div>
       <div class="tc-priority-num" style="margin-top:0.25rem">Recommended: <strong>${t.recommendedTimeStr || 'N/A'}</strong></div>
       <div class="tc-actions">
         ${!t.completed ? `
           <button class="btn btn-primary btn-sm" onclick="startStudyTimer('${t.id}', '${escHtml(t.subject)}', ${t.recommendedMinutes || 25})">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Start Study
+            <i data-lucide="play" class="icon-inline"></i> Start Study
           </button>
           <button class="btn btn-outline btn-sm" onclick="toggleDone('${t.id}')">Done</button>
         ` : `
-          <div style="color:var(--teal); font-size:0.85rem; font-weight:700;">✅ Completed Today</div>
+          <div style="color:var(--teal); font-size:0.85rem; font-weight:700;"><i data-lucide="check-circle" class="icon-inline"></i> Completed Today</div>
           <button class="btn btn-outline btn-sm" style="margin-left:auto" onclick="removeTask('${t.id}')">Delete</button>
         `}
       </div>
@@ -253,7 +257,7 @@ function buildEmpty() {
   if (isFiltered) {
     return `
       <div class="empty-state-rich">
-        <div class="empty-illustration">🔍</div>
+        <div class="empty-illustration"><i data-lucide="search" style="width:3rem;height:3rem;"></i></div>
         <div class="empty-title">No ${currentFilter}-priority subjects</div>
         <div class="empty-sub">None of your subjects fall into this priority level right now. Try a different filter or add more subjects.</div>
         <div class="empty-actions">
@@ -265,13 +269,13 @@ function buildEmpty() {
 
   return `
     <div class="empty-state-rich empty-state-onboarding">
-      <div class="empty-illustration">🎓</div>
+      <div class="empty-illustration"><i data-lucide="graduation-cap" style="width:3rem;height:3rem;"></i></div>
       <div class="empty-title">Welcome to Planora!</div>
       <div class="empty-sub">Your AI-powered study planner is ready. Add your first subject and Planora will build a smart daily schedule around your exam dates.</div>
 
       <div class="onboarding-steps">
         <div class="onboarding-step">
-          <div class="onboarding-step-icon">📚</div>
+          <div class="onboarding-step-icon"><i data-lucide="book-open"></i></div>
           <div class="onboarding-step-text">
             <strong>Add a Subject</strong>
             <span>Name, exam date &amp; difficulty</span>
@@ -279,7 +283,7 @@ function buildEmpty() {
         </div>
         <div class="onboarding-step-arrow">→</div>
         <div class="onboarding-step">
-          <div class="onboarding-step-icon">🤖</div>
+          <div class="onboarding-step-icon"><i data-lucide="bot"></i></div>
           <div class="onboarding-step-text">
             <strong>AI Prioritizes</strong>
             <span>Smart schedule generated</span>
@@ -287,7 +291,7 @@ function buildEmpty() {
         </div>
         <div class="onboarding-step-arrow">→</div>
         <div class="onboarding-step">
-          <div class="onboarding-step-icon">🏆</div>
+          <div class="onboarding-step-icon"><i data-lucide="trophy"></i></div>
           <div class="onboarding-step-text">
             <strong>Study &amp; Level Up</strong>
             <span>Earn XP, build streaks</span>
@@ -297,13 +301,13 @@ function buildEmpty() {
 
       <div class="empty-actions">
         <a href="add.html" class="btn btn-primary">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          <i data-lucide="plus" class="icon-inline"></i>
           Add First Subject
         </a>
-        <button class="btn btn-outline" onclick="loadDemoData()">✨ Try Demo Data</button>
+        <button class="btn btn-outline" onclick="loadDemoData()"><i data-lucide="sparkles" class="icon-inline"></i> Try Demo Data</button>
       </div>
 
-      <p class="empty-tip">💡 <em>Tip: Use "Try Demo Data" to see how Planora works before adding your own subjects.</em></p>
+      <p class="empty-tip"><i data-lucide="lightbulb" class="icon-inline"></i> <em>Tip: Use "Try Demo Data" to see how Planora works before adding your own subjects.</em></p>
     </div>`;
 }
 
@@ -425,11 +429,12 @@ function renderSubjectPieChart() {
   if (subjectStats.labels.length === 0) {
     container.innerHTML = `
       <div class="chart-empty-state">
-        <div class="chart-empty-icon">🥧</div>
+        <div class="chart-empty-icon"><i data-lucide="pie-chart" style="width:1.5em;height:1.5em;"></i></div>
         <div class="chart-empty-title">No study time logged yet</div>
         <div class="chart-empty-sub">Start a timer session on any subject to see how your time is distributed.</div>
         <a href="add.html" class="btn btn-primary btn-sm" style="margin-top:.75rem">Add a Subject</a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
     return;
   }
 
@@ -574,11 +579,12 @@ function renderExamTimeline() {
   if (tasks.length === 0) {
     container.innerHTML = `
       <div class="chart-empty-state">
-        <div class="chart-empty-icon">📅</div>
+        <div class="chart-empty-icon"><i data-lucide="calendar" style="width:1.5em;height:1.5em;"></i></div>
         <div class="chart-empty-title">No upcoming exams</div>
         <div class="chart-empty-sub">Add subjects with exam dates and they'll appear here as a countdown timeline.</div>
         <a href="add.html" class="btn btn-primary btn-sm" style="margin-top:.75rem">Add Exam Date</a>
       </div>`;
+    if (typeof refreshIcons === 'function') refreshIcons();
     return;
   }
 
@@ -586,12 +592,16 @@ function renderExamTimeline() {
     const daysLeft = getDaysLeft(task.examDate);
     const isUrgent = daysLeft <= 7;
     const urgentClass = isUrgent ? 'urgent' : '';
-    const countdownText = daysLeft <= 0 ? '🔴 Overdue' : daysLeft <= 3 ? `⚠️ ${daysLeft}d left` : `📅 ${daysLeft}d`;
+    const countdownText = daysLeft <= 0 
+      ? `<i data-lucide="alert-circle" class="icon-inline" style="color:var(--danger)"></i> Overdue` 
+      : daysLeft <= 3 
+        ? `<i data-lucide="alert-triangle" class="icon-inline" style="color:var(--warning)"></i> ${daysLeft}d left` 
+        : `<i data-lucide="calendar" class="icon-inline"></i> ${daysLeft}d`;
 
     return `
       <div class="timeline-item">
         <div class="timeline-marker" style="border-color:${isUrgent ? '#f43f5e' : '#22d3ee'}">
-          ${isUrgent ? '⏰' : '📕'}
+          ${isUrgent ? '<i data-lucide="clock" class="icon-inline" style="color:var(--danger)"></i>' : '<i data-lucide="book-open" class="icon-inline" style="color:var(--accent-c)"></i>'}
         </div>
         <div class="timeline-content">
           <div class="timeline-subject">${escHtml(task.subject)}</div>
@@ -603,6 +613,7 @@ function renderExamTimeline() {
   }).join('');
 
   container.innerHTML = timeline;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 /* ─── Helper: Get Subject Study Time ─── */
@@ -748,7 +759,7 @@ function displayStudyPlan(plan) {
 
   const scheduleHtml = `
     <div class="plan-section">
-      <div class="plan-section-title">📅 First 7 Days Schedule</div>
+      <div class="plan-section-title"><i data-lucide="calendar" class="icon-inline"></i> First 7 Days Schedule</div>
       <div class="daily-schedule">
         ${plan.plan.slice(0, 7).map(day => `
           <div class="day-card">
@@ -759,7 +770,7 @@ function displayStudyPlan(plan) {
             <div class="day-sessions">
               ${day.sessions.map(s => `
                 <div class="session-item">
-                  <div class="session-time">⏰ ${escHtml(s.time)}</div>
+                  <div class="session-time"><i data-lucide="clock" class="icon-inline"></i> ${escHtml(s.time)}</div>
                   <div class="session-type">${escHtml(s.type)} · ${s.duration}h</div>
                 </div>`).join('')}
             </div>
@@ -769,11 +780,11 @@ function displayStudyPlan(plan) {
 
   const revisionHtml = `
     <div class="plan-section">
-      <div class="plan-section-title">🔄 Revision Strategy</div>
+      <div class="plan-section-title"><i data-lucide="refresh-cw" class="icon-inline"></i> Revision Strategy</div>
       <div class="plan-revision-grid">
         <div class="plan-revision-item">
           <div class="plan-revision-label">Approach</div>
-          <div class="plan-revision-val">${plan.revision.strategy === 'intensive-quick-fire' ? '⚡ Intensive Quick-Fire' : '🔁 Spaced Repetition'}</div>
+          <div class="plan-revision-val">${plan.revision.strategy === 'intensive-quick-fire' ? '<i data-lucide="zap" class="icon-inline"></i> Intensive Quick-Fire' : '<i data-lucide="repeat" class="icon-inline"></i> Spaced Repetition'}</div>
         </div>
         <div class="plan-revision-item">
           <div class="plan-revision-label">Revision Starts</div>
@@ -791,18 +802,19 @@ function displayStudyPlan(plan) {
 
   const breaksHtml = `
     <div class="plan-section">
-      <div class="plan-section-title">☕ Break & Wellness Plan</div>
+      <div class="plan-section-title"><i data-lucide="coffee" class="icon-inline"></i> Break & Wellness Plan</div>
       <div class="plan-pomodoro-info">
-        <span>⏱️ <strong>${plan.breaks.pomodoroStyle.focusMinutes} min</strong> focus</span>
-        <span>☕ <strong>${plan.breaks.pomodoroStyle.breakMinutes} min</strong> break</span>
-        <span>🔄 <strong>${plan.breaks.pomodoroStyle.sessionsPerDay}</strong> sessions/day</span>
+        <span><i data-lucide="clock" class="icon-inline"></i> <strong>${plan.breaks.pomodoroStyle.focusMinutes} min</strong> focus</span>
+        <span><i data-lucide="coffee" class="icon-inline"></i> <strong>${plan.breaks.pomodoroStyle.breakMinutes} min</strong> break</span>
+        <span><i data-lucide="repeat" class="icon-inline"></i> <strong>${plan.breaks.pomodoroStyle.sessionsPerDay}</strong> sessions/day</span>
       </div>
       <ul class="plan-recommendations">
-        ${plan.breaks.recommendations.map(r => `<li>✅ ${escHtml(r)}</li>`).join('')}
+        ${plan.breaks.recommendations.map(r => `<li><i data-lucide="check" class="icon-inline"></i> ${escHtml(r)}</li>`).join('')}
       </ul>
     </div>`;
 
   content.innerHTML = statsHtml + scheduleHtml + revisionHtml + breaksHtml;
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 function acceptAIPlan() {
@@ -850,11 +862,12 @@ function clearAIChat() {
   container.innerHTML = `
     <div class="ai-message">
       <div class="ai-message-content">
-        <p>🗑️ Chat cleared! I'm ready to help again.</p>
+        <p><i data-lucide="trash-2" class="icon-inline"></i> Chat cleared! I'm ready to help again.</p>
         <p>What would you like to do?</p>
       </div>
       <div class="ai-message-time">Just now</div>
     </div>`;
+  if (typeof refreshIcons === 'function') refreshIcons();
   resetChatSuggestions();
   showToast('Chat history cleared', 'info');
 }
@@ -863,17 +876,18 @@ function resetChatSuggestions() {
   const container = document.getElementById('aiChatSuggestions');
   if (!container) return;
   const defaults = [
-    { label: '📅 Create Plan',    msg: 'Create a study plan' },
-    { label: '📊 My Progress',    msg: 'Analyze my progress' },
-    { label: '🎯 Quiz Me',        msg: 'Give me a quiz' },
-    { label: '⏰ Pomodoro',       msg: 'Start Pomodoro' },
-    { label: '📖 Explain Topic',  msg: 'Explain spaced repetition' },
-    { label: '📝 Summarize',      msg: 'Summarize my subjects' },
+    { label: '<i data-lucide="calendar" class="icon-inline"></i> Create Plan',    msg: 'Create a study plan' },
+    { label: '<i data-lucide="bar-chart-2" class="icon-inline"></i> My Progress',    msg: 'Analyze my progress' },
+    { label: '<i data-lucide="help-circle" class="icon-inline"></i> Quiz Me',        msg: 'Give me a quiz' },
+    { label: '<i data-lucide="clock" class="icon-inline"></i> Pomodoro',       msg: 'Start Pomodoro' },
+    { label: '<i data-lucide="book-open" class="icon-inline"></i> Explain Topic',  msg: 'Explain spaced repetition' },
+    { label: '<i data-lucide="file-text" class="icon-inline"></i> Summarize',      msg: 'Summarize my subjects' },
   ];
   container.innerHTML = defaults.map(d =>
     `<button class="ai-suggestion-btn" data-msg="${escHtml(d.msg)}" onclick="sendChatMessage(this.dataset.msg)">${d.label}</button>`
   ).join('');
   container.style.display = 'grid';
+  if (typeof refreshIcons === 'function') refreshIcons();
 }
 
 function handleChatSubmit(e) {
@@ -966,6 +980,7 @@ function appendAIMessage(container, response) {
     <div class="ai-message-content">${response.text}</div>
     <div class="ai-message-time">${getTimeLabel()}</div>`;
   container.appendChild(el);
+  if (typeof refreshIcons === 'function') refreshIcons();
   container.scrollTop = container.scrollHeight;
 }
 
